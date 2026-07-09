@@ -34,30 +34,20 @@ The installed agent instructions automatically handle the rest:
 - avoid committing `AGENTS.md`, `SANTOSH_STANDARDS.md`, scanner scripts, copied dev-standards files, `~/.config/dev-standards` files, or Santosh-only `CLAUDE.md` edits
 - commit and push only the project changes required for the branch
 
-## Optional Scanner
+## Useful Commands
 
-Run a read-only scan:
-
-```sh
-scan-santosh-violations
-```
-
-Scan staged files only:
-
-```sh
-scan-santosh-violations --staged
-```
-
-Remove comment violations explicitly:
-
-```sh
-scan-santosh-violations --fix
-```
-
-## Check Setup
+Check that the setup is installed:
 
 ```sh
 test -f ~/.config/dev-standards/SANTOSH_STANDARDS.md && command -v scan-santosh-violations && echo "Santosh setup ready"
 ```
 
-Project repos do not need `AGENTS.md` or `CLAUDE.md` unless you explicitly want to version agent instructions there.
+This confirms the global standards file exists and the scanner command is available.
+
+Run a read-only Santosh scan in the current repo:
+
+```sh
+scan-santosh-violations
+```
+
+This reports common Santosh issues, such as DB mocks, inline seed SQL in tests, and unnecessary test/tool comments. It does not change files.
