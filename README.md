@@ -19,6 +19,12 @@ Install the reusable standards file and manual scanner:
 ./install.sh
 ```
 
+Or use this single command from any shell. If the setup already exists, it prints that it is ready. If it is missing, it clones or updates `dev-standards` and runs the installer:
+
+```sh
+bash -lc 'test -f ~/.config/dev-standards/SANTOSH_STANDARDS.md && command -v scan-santosh-violations >/dev/null && echo "Santosh checks already set up" || { mkdir -p ~/projects; if [ -d ~/projects/dev-standards/.git ]; then git -C ~/projects/dev-standards pull; else git clone https://github.com/srinivassivakumar/dev-standards.git ~/projects/dev-standards; fi; bash ~/projects/dev-standards/install.sh; }'
+```
+
 This creates:
 
 ```text
