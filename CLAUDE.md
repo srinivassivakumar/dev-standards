@@ -2,12 +2,45 @@
 
 Use these standards before making code changes, writing tests, opening PRs, or responding to reviewer feedback.
 
-If Santosh leaves a new review comment, decide whether it is:
+## Santosh Review Workflow
+
+When the user pastes a Santosh review comment and says:
+
+```text
+Fix this branch using Santosh standards.
+```
+
+Automatically do all of the following:
+
+1. Fix the current project branch using these standards.
+2. Decide whether the Santosh comment is a reusable review rule or PR-specific feedback.
+3. If it is reusable, update both:
+   - `~/.config/dev-standards/SANTOSH_STANDARDS.md`
+   - `/home/sri/projects/dev-standards/SANTOSH_STANDARDS.md`
+4. If the standards source repo changed, commit and push `/home/sri/projects/dev-standards`.
+5. If it is PR-specific, do not update standards.
+6. Run the relevant project checks.
+7. Before committing or pushing the project branch, run `git status --short`.
+8. Remove or exclude any dev-standards traces from the project repo.
+9. Commit and push only the project changes required for the branch.
+
+Do not require the user to repeat these cleanup and standards-update steps in the prompt.
+
+Reusable versus PR-specific:
 
 - A reusable standard: add it to `~/.config/dev-standards/SANTOSH_STANDARDS.md` and apply it to the branch.
 - PR-specific feedback: apply it to the branch only.
 
 Do not update global standards for one-off data values, branch-specific bugs, or comments that only apply to one PR.
+
+Never commit these dev-standards traces into a project repo unless explicitly requested:
+
+- `AGENTS.md`
+- `SANTOSH_STANDARDS.md`
+- `scan-santosh-violations.ts`
+- `~/.config/dev-standards`
+- copied `dev-standards` scripts
+- Santosh-only edits to `CLAUDE.md`
 
 ## Bun Defaults
 

@@ -19,16 +19,18 @@ Install the reusable standards file and manual scanner:
 ./install.sh
 ```
 
-Or use this single command from any shell. If the setup already exists, it prints that it is ready. If it is missing, it clones or updates `dev-standards` and runs the installer:
+Or use this single command from any shell. It clones or updates `dev-standards` and reinstalls the standards, scanner, and global agent instructions:
 
 ```sh
-bash -lc 'test -f ~/.config/dev-standards/SANTOSH_STANDARDS.md && command -v scan-santosh-violations >/dev/null && echo "Santosh checks already set up" || { mkdir -p ~/projects; if [ -d ~/projects/dev-standards/.git ]; then git -C ~/projects/dev-standards pull; else git clone https://github.com/srinivassivakumar/dev-standards.git ~/projects/dev-standards; fi; bash ~/projects/dev-standards/install.sh; }'
+bash -lc 'mkdir -p ~/projects; if [ -d ~/projects/dev-standards/.git ]; then git -C ~/projects/dev-standards pull; else git clone https://github.com/srinivassivakumar/dev-standards.git ~/projects/dev-standards; fi; bash ~/projects/dev-standards/install.sh'
 ```
 
 This creates:
 
 ```text
 ~/.config/dev-standards/SANTOSH_STANDARDS.md
+~/.config/dev-standards/AGENTS.md
+~/.config/opencode/AGENTS.md
 ~/.config/dev-standards/scripts/scan-santosh-violations.ts
 ~/.local/bin/scan-santosh-violations
 ```
@@ -39,42 +41,19 @@ No git hooks are installed.
 
 When Santosh comments on a PR:
 
-1. Paste the comment to your agent.
-2. Ask it to fix the branch using the Santosh standards.
-3. Ask it whether the comment is a reusable new rule.
-4. If reusable, update both the installed standards file and the source repo standards file.
-5. Commit and push `/home/sri/projects/dev-standards` so the rule is reusable later.
-6. If PR-specific, fix only the branch and do not update standards.
-7. Run tests and checks.
-8. Run `git status --short` in the project repo and remove any dev-standards traces.
-9. Commit and push only the project changes required for the branch.
+1. Make sure the one-command setup above has been run on the machine.
+2. Paste Santosh's comment to your agent.
+3. Ask it to fix the branch using the Santosh standards.
 
 Useful prompt:
 
 ```text
-Santosh commented:
-
 <paste comment>
 
 Fix this branch using Santosh standards.
-
-If this comment is a reusable review rule, update both:
-- ~/.config/dev-standards/SANTOSH_STANDARDS.md
-- /home/sri/projects/dev-standards/SANTOSH_STANDARDS.md
-
-Then commit and push /home/sri/projects/dev-standards.
-
-If it is PR-specific, do not update standards.
-
-Run checks.
-
-Before committing or pushing the fixed branch:
-- Run git status --short.
-- Remove any dev-standards traces from the project repo.
-- Do not commit AGENTS.md, SANTOSH_STANDARDS.md, scan-santosh-violations.ts, copied dev-standards scripts, ~/.config/dev-standards files, or Santosh-only CLAUDE.md edits.
-
-Then commit and push only the project changes required for this branch.
 ```
+
+The installed agent instructions handle reusable-rule updates, standards repo pushes, project checks, project branch pushes, and dev-standards trace cleanup automatically.
 
 ## Check Setup
 
@@ -107,6 +86,8 @@ Check that a repo has agent files:
 ```sh
 ls AGENTS.md CLAUDE.md
 ```
+
+Project repos do not need these files unless you explicitly want to version agent instructions there.
 
 ## Manual Scanner
 
