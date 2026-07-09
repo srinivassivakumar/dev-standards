@@ -32,7 +32,7 @@ function listFiles(): string[] {
 		.map((file) => file.trim())
 		.filter(Boolean)
 		.filter((file) => /\.(ts|tsx|js|jsx)$/.test(file))
-		.filter((file) => file !== "scripts/scan-santosh-violations.ts")
+		.filter((file) => file !== "scripts/scan-cto-violations.ts")
 		.filter((file) => existsSync(file));
 }
 
@@ -241,10 +241,10 @@ if (shouldFix) {
 const violations = files.flatMap(detect);
 
 if (violations.length > 0) {
-	console.log("\nSantosh standards violations found:");
+	console.log("\nCTO standards violations found:");
 	printViolations(violations);
 	console.log("\nFix these manually, or run with --fix to remove comment violations only.");
 	process.exit(1);
 }
 
-console.log("Santosh standards scan clean.");
+console.log("CTO standards scan clean.");

@@ -1,12 +1,12 @@
-# Santosh Standards
+# CTO Standards
 
-Coding, testing, and review patterns expected by Santosh. Follow these for all work.
+Coding, testing, and review patterns expected by CTO. Follow these for all work.
 
 ---
 
 ## Updating These Standards
 
-When Santosh leaves a new review comment:
+When CTO leaves a new review comment:
 
 - If it is a reusable preference, add the rule here and apply it to the branch.
 - If it is only about one PR's data, bug, naming, or local behavior, fix the branch but do not add a global rule.
@@ -37,11 +37,11 @@ Use these standards as local/global guidance only.
 Do not add or commit dev-standards traces into project repos unless explicitly requested:
 
 - `AGENTS.md`
-- `SANTOSH_STANDARDS.md`
-- `scan-santosh-violations.ts`
+- `CTO_STANDARDS.md`
+- `scan-cto-violations.ts`
 - `~/.config/dev-standards`
 - copied `dev-standards` scripts
-- Santosh-only edits to `CLAUDE.md`
+- CTO-only edits to `CLAUDE.md`
 
 Before committing or pushing a project branch, run:
 
