@@ -30,6 +30,29 @@ Do not add that globally.
 
 ---
 
+## Do Not Commit Standards Traces
+
+Use these standards as local/global guidance only.
+
+Do not add or commit dev-standards traces into project repos unless explicitly requested:
+
+- `AGENTS.md`
+- `SANTOSH_STANDARDS.md`
+- `scan-santosh-violations.ts`
+- `~/.config/dev-standards`
+- copied `dev-standards` scripts
+- Santosh-only edits to `CLAUDE.md`
+
+Before committing or pushing a project branch, run:
+
+```sh
+git status --short
+```
+
+If any dev-standards trace appears, remove it from the project commit.
+
+---
+
 ## Scope Control
 
 Optimize for less scope, not more. Do not assume that adding more code or more future-proofing makes a change better.
