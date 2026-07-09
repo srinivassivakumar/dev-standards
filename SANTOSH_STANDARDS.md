@@ -49,7 +49,9 @@ Before committing or pushing a project branch, run:
 git status --short
 ```
 
-If any dev-standards trace appears, remove it from the project commit.
+If any dev-standards trace appears, remove it from the project repo or exclude it from the commit before pushing.
+
+When an agent is asked to fix and push a project branch using these standards, this cleanup is mandatory and should happen automatically before the final project commit.
 
 ---
 

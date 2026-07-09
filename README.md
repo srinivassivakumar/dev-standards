@@ -46,7 +46,8 @@ When Santosh comments on a PR:
 5. Commit and push `/home/sri/projects/dev-standards` so the rule is reusable later.
 6. If PR-specific, fix only the branch and do not update standards.
 7. Run tests and checks.
-8. Commit and push the fixed branch.
+8. Run `git status --short` in the project repo and remove any dev-standards traces.
+9. Commit and push only the project changes required for the branch.
 
 Useful prompt:
 
@@ -65,7 +66,14 @@ Then commit and push /home/sri/projects/dev-standards.
 
 If it is PR-specific, do not update standards.
 
-Run checks, commit, and push the fixed branch.
+Run checks.
+
+Before committing or pushing the fixed branch:
+- Run git status --short.
+- Remove any dev-standards traces from the project repo.
+- Do not commit AGENTS.md, SANTOSH_STANDARDS.md, scan-santosh-violations.ts, copied dev-standards scripts, ~/.config/dev-standards files, or Santosh-only CLAUDE.md edits.
+
+Then commit and push only the project changes required for this branch.
 ```
 
 ## Check Setup
