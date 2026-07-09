@@ -36,10 +36,11 @@ When Santosh comments on a PR:
 1. Paste the comment to your agent.
 2. Ask it to fix the branch using the Santosh standards.
 3. Ask it whether the comment is a reusable new rule.
-4. If reusable, update `~/.config/dev-standards/SANTOSH_STANDARDS.md`.
-5. If PR-specific, fix only the branch.
-6. Run tests and checks.
-7. Push.
+4. If reusable, update both the installed standards file and the source repo standards file.
+5. Commit and push `/home/sri/projects/dev-standards` so the rule is reusable later.
+6. If PR-specific, fix only the branch and do not update standards.
+7. Run tests and checks.
+8. Commit and push the fixed branch.
 
 Useful prompt:
 
@@ -48,9 +49,49 @@ Santosh commented:
 
 <paste comment>
 
-Fix this branch. Also check if this is a new reusable Santosh rule.
-If yes, update ~/.config/dev-standards/SANTOSH_STANDARDS.md.
-If it is only PR-specific, do not update the standards.
+Fix this branch using Santosh standards.
+
+If this comment is a reusable review rule, update both:
+- ~/.config/dev-standards/SANTOSH_STANDARDS.md
+- /home/sri/projects/dev-standards/SANTOSH_STANDARDS.md
+
+Then commit and push /home/sri/projects/dev-standards.
+
+If it is PR-specific, do not update standards.
+
+Run checks, commit, and push the fixed branch.
+```
+
+## Check Setup
+
+Check that the global standards file exists:
+
+```sh
+test -f ~/.config/dev-standards/SANTOSH_STANDARDS.md && echo "standards installed"
+```
+
+Check that the scanner command is available:
+
+```sh
+command -v scan-santosh-violations
+```
+
+Run the scanner:
+
+```sh
+scan-santosh-violations
+```
+
+Check that global git hooks are not installed:
+
+```sh
+git config --global --get core.hooksPath || echo "no global hooks"
+```
+
+Check that a repo has agent files:
+
+```sh
+ls AGENTS.md CLAUDE.md
 ```
 
 ## Manual Scanner
