@@ -1,189 +1,145 @@
-Default to using Bun instead of Node.js.
+# Claude Instructions
 
-Use bun <file> instead of node <file> or ts-node <file>
-Use bun test instead of jest or vitest
-Use bun build <file.html|file.ts|file.css> instead of webpack or esbuild
-Use bun install instead of npm install or yarn install or pnpm install
-Use bun run <script> instead of npm run <script>
-Use bunx <package> <command> instead of npx <package> <command>
-Bun automatically loads .env, so don't use dotenv.
+Use these standards before making code changes, writing tests, opening PRs, or responding to reviewer feedback.
 
-APIs
-Bun.serve() supports WebSockets, HTTPS, and routes. Don't use express.
-bun:sqlite for SQLite. Don't use better-sqlite3.
-Bun.redis for Redis. Don't use ioredis.
-Bun.sql for Postgres. Don't use pg or postgres.js.
-WebSocket is built-in. Don't use ws.
-Prefer Bun.file over node:fs's readFile/writeFile
+If Santosh leaves a new review comment, decide whether it is:
 
-Testing
-Use bun test to run tests.
+- A reusable standard: add it to `~/.config/dev-standards/SANTOSH_STANDARDS.md` and apply it to the branch.
+- PR-specific feedback: apply it to the branch only.
 
-Pull Requests
-When creating PRs with gh pr create, use this exact format:
+Do not update global standards for one-off data values, branch-specific bugs, or comments that only apply to one PR.
 
-Title: <branch-type>: <issue-title-lowercased-hyphens>
-Body:
-  Closes #<issue-number>
-  ## <issue title>
-  ## What was implemented
-  - <bullet list>
-  ## Verification
-  - [ ] <acceptance criteria>
-  ## Notes (omit if empty)
+## Bun Defaults
 
----
+- Use `bun <file>` instead of `node <file>` or `ts-node <file>`.
+- Use `bun test` or the repo's existing Bun test script.
+- Use `bun run <script>` instead of npm/yarn/pnpm equivalents.
+- Use `bun install` instead of npm/yarn/pnpm equivalents.
+- Use `bunx <package> <command>` instead of `npx`.
+- Bun automatically loads `.env`; do not add `dotenv`.
+- Prefer Bun APIs when the repo already uses them.
 
-# Santosh Standards
+## Santosh Standards
 
-Coding, testing, and review patterns expected by Santosh. Follow these for all work.
-
-## Scope Control
+### Scope Control
 
 Optimize for less scope, not more.
 
-- Narrowest implementation that satisfies the requirement — if only one read path is needed, do not build write paths
-- Do not add endpoints, mutations, helpers, or configuration surface area not required by the current story or PR
-- If a feature can be delivered with fewer moving parts, choose that version
-- Prefer simpler implementation over extra abstraction
-- Consistency with the existing codebase over invention
+- Implement the narrowest change that satisfies the requirement.
+- Do not add endpoints, mutations, helpers, config, or future-proofing that the current PR does not require.
+- Prefer simple code over extra abstraction.
+- Match the existing codebase instead of inventing a parallel pattern.
 
-## Preserve Existing Behavior
+### Preserve Existing Behavior
 
-Current defaults, seeds, flows, and semantics are intentional unless the task explicitly changes them.
+Existing defaults, seeds, flows, and semantics are intentional unless the task explicitly changes them.
 
-- Do not remove or change a default that other code may rely on
-- Do not change seed behavior, route behavior, config behavior, or data semantics without an explicit requirement
-- Avoid incidental rewrites and "while I was here" behavior changes
-- If a reviewer would ask "why was this changed?" and the PR did not need it — do not change it
+- Do not remove or change defaults without a requirement.
+- Do not change seed behavior, route behavior, config behavior, or data semantics incidentally.
+- Avoid "while I was here" rewrites.
+- If a reviewer would ask why something changed and the PR did not need it, do not change it.
 
-## Prefer Existing Patterns
+### Prefer Existing Patterns
 
-Do not invent a parallel local pattern if the codebase already has one.
+- Search the codebase before introducing a new type, helper, query shape, component, or file pattern.
+- Reuse shared types, utilities, schema-backed shapes, query helpers, and fixture patterns.
+- Consistency beats originality.
 
-- Check whether the codebase already has a shared type, utility, RPC/client pattern, standard component, preferred query shape, or canonical file before introducing anything new
-- Follow established patterns closely — do not introduce a second style for the same kind of problem
-- Prefer alignment over originality
+### Avoid Unnecessary Abstraction
 
-## Avoid Unnecessary Abstraction
+- Do not create wrappers, adapters, DTOs, helper layers, or new types unless they solve a real problem.
+- Avoid types that restate existing schema-backed types.
+- Avoid helper functions where a direct call is clearer and already follows local style.
+- If the code can be simpler without losing clarity, simplify it.
 
-Do not create extra types, wrappers, adapters, DTOs, helpers, or layers unless they remove a real problem.
+### Code Location
 
-- Avoid types that restate existing schema-backed types
-- Avoid wrappers around functions that are already simple enough
-- Avoid custom helpers where a shared helper already exists
-- Avoid abstractions created only to make code look cleaner in the moment
-- If the same thing already exists, reuse it — if the code can be simpler without losing clarity, simplify it
-- Do not mistake additional structure for better engineering
+- Put code where similar code already lives.
+- Schema-related logic stays with schema or fixture files.
+- Query logic goes where queries normally live.
+- Do not scatter related logic across new files when the repo has a canonical home.
 
-## Code Location
+### Query and Data Access
 
-Keep logic in the layer where the rest of the codebase expects to find it.
+- Prefer the simplest correct query.
+- Keep filtering and joining in the appropriate layer.
+- Avoid clever query indirection.
+- Make ownership and constraints obvious.
+- Use `getDb()` from the repo DB client when that is the local pattern.
 
-- Schema-related logic stays with schema code, query logic goes where queries normally live
-- UI components go where similar UI components already live
-- Do not scatter related logic across new files when the codebase already has a canonical home for it
+### Tests
 
-## Query and Data-Access Style
+Do not mock database behavior.
 
-Prefer the simplest correct query shape.
+- No `mock.module(...)` for DB code.
+- No fake SQL clients.
+- No `createMockSql()`, `makeMockClient()`, or fake row builders.
+- Use the real test DB setup.
+- Use the real `getDb()` path.
+- Load schema from a shared fixture file such as `tools/fixtures/schema.sql`.
+- Put seed data in shared fixture/seed files such as `tools/fixtures/seed.ts`.
+- Do not put inline `INSERT INTO` seed data in test files.
+- Run the real tool/query against seeded DB data.
+- Assert behavior from real output.
+- Use `.env.test` or local test DB credentials, never production credentials.
 
-- Do not over-model or indirect a query when a direct filter, join, or lookup would be clearer
-- Keep filtering and joining in the appropriate layer
-- Avoid cleverness that obscures what data is actually being fetched
-- Prefer queries that make ownership and constraints obvious
-- If a simpler query would be easier to read and equally correct, use it
+Expected shape:
 
-## Testing
-
-Do not mock the database. Tests should use real DB, real fixtures, and real seeds.
-
-- Never mock the database — no `mock.module(...)`, no fake SQL clients, no `createMockSql()` helpers
-- Use real test DB with `getDb()` from `db/client.ts`
-- Load schema from `tools/fixtures/schema.sql` using `getDb().unsafe(await Bun.file("...").text())`
-- Seed data using real `INSERT INTO` statements
-- Run the actual tool/query against seeded DB, assert real output
-- Use `.env.test` — never production credentials
-- Run with `bun run test`
-
-Expected test shape:
 ```ts
 beforeAll(async () => {
-  await getDb().unsafe(await Bun.file("tools/fixtures/schema.sql").text());
+	await getDb().unsafe(await Bun.file("tools/fixtures/schema.sql").text());
 });
+
 beforeEach(async () => {
-  await getDb().unsafe("TRUNCATE TABLE ... RESTART IDENTITY CASCADE");
-  await seedFixtures(getDb());
+	await getDb().unsafe("TRUNCATE TABLE ... RESTART IDENTITY CASCADE");
+	await seedFixtures(getDb());
 });
+
 test("behavior description", async () => {
-  const result = await tool.run({...});
-  expect(result).toEqual(...);
+	const result = await tool.run({ input: { organizationId } });
+	expect(result).toEqual(expected);
 });
 ```
 
-## Fixtures and Seeds
+### Fixtures and Seeds
 
-- Schema SQL lives in `tools/fixtures/schema.sql` — not inline `CREATE TABLE` in test files
-- Seed SQL lives in `tools/fixtures/seed.ts` — not inline `INSERT` in test files
-- Create reusable seed helpers: `seedFixtures(db, overrides?)`
-- Fixture schema should match production table shape (columns, indexes)
-- Seed data should be behavior-focused — no giant `$1` to `$14` placeholder inserts
-- Prefer shared fixture setup over long inline setup in every test file
+- Schema SQL belongs in a shared schema fixture, not inline `CREATE TABLE` blocks in tests.
+- Seed SQL belongs in shared seed helpers, not inline `INSERT` blocks in tests.
+- Create reusable seed helpers like `seedFixtures(db, overrides?)`.
+- Fixture schema should match production table shape closely enough for the tested behavior.
+- Seed data should be behavior-focused and readable.
+- Prefer shared seed helpers over one-off setup in every test file.
 
-## DB / Tool Code
+### Comments and Dead Code
 
-- Use `getDb()` from `../db/client` — avoid direct `sql` singleton
-- Normalize Postgres date columns — they may return as `Date` objects, not strings
-- Keep SQL real and straightforward — don't copy query logic into TypeScript mocks
-- Optimize for correctness first, then simplicity
+- No inline comments in test code.
+- No section comments like `// Tool tests`, `// Pure helpers`, or decorative separators.
+- No thinking comments like `// Wait, does this...`.
+- Let test names, helper names, and assertions explain intent.
+- Remove commented-out code, placeholder files, dead files, and AI scaffolding.
+- Only add production comments for genuinely non-obvious logic.
 
-## Comments, Dead Code, Scaffolding
+### Configuration
 
-Remove non-essential comments and artifacts before review.
+- Validate required configuration early.
+- Do not hide broken config behind silent fallbacks unless that fallback is already an established repo pattern.
 
-- No inline comments in test code
-- No section comments like `// Tool tests` or `// Pure helpers`
-- No thinking comments like `// Wait, does this...`
-- Let test names, helper names, and assertions explain intent
-- Remove commented-out code, placeholder files, dead files, and obvious AI-generated scaffolding before review
-- Only add comments that explain genuinely non-obvious production logic
+### PR Hygiene
 
-## Configuration
+- Keep branches merged with `main`.
+- Resolve conflicts using main's current structure.
+- Before saying a branch is ready, verify mergeable, clean, CI green, no DB mocks, no inline seed SQL in tests, no unnecessary comments, and shared fixtures used.
 
-Be explicit about required configuration.
+### Final Self-Review
 
-- If an environment variable or config value is required, validate it early and fail fast
-- Do not silently fallback in a way that hides broken configuration unless that fallback is an established and intentional part of the system
+Before finishing, check:
 
-## PR Hygiene
-
-- Keep branches merged with `main`
-- Resolve conflicts using main's current structure (especially shared fixtures and db client)
-- Before merge: mergeable, clean, CI green, no mocks, no comments, shared fixtures used
-
-## Pre-PR Self-Review Checklist
-
-Before considering the work ready, verify all of the following:
-
-- Did I add anything not required right now?
-- Did I change any existing behavior without explicit need?
-- Did I introduce a new pattern where the codebase already had one?
-- Did I duplicate any type, utility, helper, or component?
-- Did I place the code in the canonical location?
-- Did I choose the simplest correct query or data-access path?
-- Did I use realistic tests where correctness depends on DB behavior?
-- Did I consolidate fixtures and seeds instead of inlining setup?
-- Did I remove unnecessary comments, dead code, and scaffolding?
-- Is CI green, no mocks, no comments, shared fixtures used?
-
-## Agent Decision Rules
-
-When deciding between two implementations, prefer the one that:
-
-1. Changes less
-2. Matches existing code more closely
-3. Introduces fewer new concepts
-4. Preserves behavior more safely
-5. Is easier to test with real data
-
-If one option is more flexible but the other is more consistent and narrower, pick the narrower one.
+- Did I add anything not required?
+- Did I change existing behavior without explicit need?
+- Did I introduce a new pattern where one already existed?
+- Did I duplicate a type, helper, component, or query?
+- Did I place code in the canonical location?
+- Did I use realistic DB tests where DB behavior matters?
+- Did I move schema and seed data into fixtures?
+- Did I remove unnecessary comments and scaffolding?
+- Did I run the relevant checks?

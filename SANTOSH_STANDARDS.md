@@ -4,6 +4,32 @@ Coding, testing, and review patterns expected by Santosh. Follow these for all w
 
 ---
 
+## Updating These Standards
+
+When Santosh leaves a new review comment:
+
+- If it is a reusable preference, add the rule here and apply it to the branch.
+- If it is only about one PR's data, bug, naming, or local behavior, fix the branch but do not add a global rule.
+- Keep new rules short, specific, and actionable.
+- Prefer one clear rule over copying a whole review comment.
+
+Example reusable comment:
+
+> All of these seeds should go to seed sql. Create a standard seed and run it once before the test.
+
+Rule to add:
+
+- Put seed data in shared fixture/seed files, not inline inside test files.
+- Tests should run standard seeds before assertions.
+
+Example PR-specific comment:
+
+> This machine ID should be 42 for this test case.
+
+Do not add that globally.
+
+---
+
 ## Scope Control
 
 Optimize for less scope, not more. Do not assume that adding more code or more future-proofing makes a change better.
