@@ -1,10 +1,36 @@
-# OpenCode Rules
+Default to using Bun instead of Node.js.
 
-## Project Setup Commands
-For TypeScript/Bun projects:
-- `bun run test` — run tests
-- `bun run typecheck` — type checking
-- `bun run lint` — linting
+Use bun <file> instead of node <file> or ts-node <file>
+Use bun test instead of jest or vitest
+Use bun build <file.html|file.ts|file.css> instead of webpack or esbuild
+Use bun install instead of npm install or yarn install or pnpm install
+Use bun run <script> instead of npm run <script>
+Use bunx <package> <command> instead of npx <package> <command>
+Bun automatically loads .env, so don't use dotenv.
+
+APIs
+Bun.serve() supports WebSockets, HTTPS, and routes. Don't use express.
+bun:sqlite for SQLite. Don't use better-sqlite3.
+Bun.redis for Redis. Don't use ioredis.
+Bun.sql for Postgres. Don't use pg or postgres.js.
+WebSocket is built-in. Don't use ws.
+Prefer Bun.file over node:fs's readFile/writeFile
+
+Testing
+Use bun test to run tests.
+
+Pull Requests
+When creating PRs with gh pr create, use this exact format:
+
+Title: <branch-type>: <issue-title-lowercased-hyphens>
+Body:
+  Closes #<issue-number>
+  ## <issue title>
+  ## What was implemented
+  - <bullet list>
+  ## Verification
+  - [ ] <acceptance criteria>
+  ## Notes (omit if empty)
 
 ---
 
@@ -12,11 +38,9 @@ For TypeScript/Bun projects:
 
 Coding, testing, and review patterns expected by Santosh. Follow these for all work.
 
----
-
 ## Scope Control
 
-Optimize for less scope, not more. Do not assume that adding more code or more future-proofing makes a change better.
+Optimize for less scope, not more.
 
 - Narrowest implementation that satisfies the requirement — if only one read path is needed, do not build write paths
 - Do not add endpoints, mutations, helpers, or configuration surface area not required by the current story or PR
@@ -58,7 +82,6 @@ Keep logic in the layer where the rest of the codebase expects to find it.
 
 - Schema-related logic stays with schema code, query logic goes where queries normally live
 - UI components go where similar UI components already live
-- Client/query options stay with the rest of the client/query code
 - Do not scatter related logic across new files when the codebase already has a canonical home for it
 
 ## Query and Data-Access Style
@@ -106,7 +129,6 @@ test("behavior description", async () => {
 - Fixture schema should match production table shape (columns, indexes)
 - Seed data should be behavior-focused — no giant `$1` to `$14` placeholder inserts
 - Prefer shared fixture setup over long inline setup in every test file
-- Prefer shared seed helpers over one-off schema definitions when there is a shared fixture path
 
 ## DB / Tool Code
 
@@ -124,7 +146,7 @@ Remove non-essential comments and artifacts before review.
 - No thinking comments like `// Wait, does this...`
 - Let test names, helper names, and assertions explain intent
 - Remove commented-out code, placeholder files, dead files, and obvious AI-generated scaffolding before review
-- The code should read cleanly on its own — only add comments that explain genuinely non-obvious production logic
+- Only add comments that explain genuinely non-obvious production logic
 
 ## Configuration
 
